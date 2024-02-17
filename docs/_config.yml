@@ -32,6 +32,10 @@ github_username: Aca-S
 theme: minima
 plugins:
   - jekyll-feed
+  
+collections:
+  projbp:
+    output: true
 
 # Exclude from processing.
 # The following items will not be processed, by default.
