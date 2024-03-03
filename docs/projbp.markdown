@@ -12,10 +12,11 @@ Termin vežbi:
 Sajt profesora:
 - [Saša Malkov](http://poincare.matf.bg.ac.rs/~smalkov/)
 
-Ostali Asistenti:
+Ostali asistenti:
 - [Nikola Katić](http://poincare.matf.bg.ac.rs/~nikola.katic/)
 - [Vasilije Todorović](http://poincare.matf.bg.ac.rs/~vasilije.todorovic/)
 
 ### Časovi
 
 - [Čas 1]({{ site.baseurl }}{% link _projbp/cas-01.markdown %})
+- [Čas 2]({{ site.baseurl }}{% link _projbp/cas-02.markdown %})
