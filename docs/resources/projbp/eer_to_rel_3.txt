@@ -1,0 +1,29 @@
+Apoteka(*sifra, naziv, adresa)
+Lek(*sifra, naziv, prosecne_mesecne_potrebe)
+Zaposleni(*JMBG, ime, prezime, adresa)
+Veletrgovina(*sifra, naziv, adresa, telefon)
+Nabavka(*sifra, ukupni_iznos, nacin_placanja, datum_isporuke, ^sifra_veletrgovine, ^JMBG_komercijaliste)
+	Nabavka[sifra_veletrgovine] < Veletrgovina[sifra]
+	Nabavka[JMBG_komercijaliste] < Komercijalista[JMBG_zaposlenog]
+
+Farmaceut(*^JMBG_zaposlenog, strucna_sprema)
+	Farmaceut[JMBG_zaposlenog] < Zaposleni[JMBG]
+Komercijalista(*^JMBG_zaposlenog, telefon)
+	Komercijalista[JMBG_zaposlenog] < Zaposleni[JMBG]
+
+Zaposlen(*^sifra_apoteke, *^JMBG_farmaceuta, meseci, dana)
+	Zaposlen[sifra_apoteke] < Apoteka[sifra]
+	Zaposlen[JMBG_farmaceuta] < Farmaceut[JMBG_zaposlenog]
+Raspolaze(*^sifra_apoteke, *^sifra_leka, kolicina, prosecne_mesecne_potrebe)
+	Raspolaze[sifra_apoteke] < Apoteka[sifra]
+	Raspolaze[sifra_leka] < Lek[sifra]
+Isporucuje(*^sifra_leka, *^sifra_nabavke)
+	Isporucuje[sifra_leka] < Lek[sifra]
+	Isporucuje[sifra_nabavke] < Nabavka[sifra]
+Zamena(*^sifra_leka, *^sifra_zamene)
+	Zamena[sifra_leka] < Lek[sifra]
+	Zamena[sifra_zamene] < Lek[sifra]
+Isporucen(*^sifra_apoteke, *^sifra_leka, *^sifra_nabavke, kolicina)
+	Isporucen[sifra_apoteke] < Apoteka[sifra]
+	Isporucen[sifra_leka, sifra_nabavke] < Isporucuje[sifra_leka, sifra_nabavke]
+

@@ -1,0 +1,33 @@
+Zaposleni(*JMBG, ime, prezime, adresa, telefon, datum_zasnivanja_radnog_odnosa, naziv_radnog_mesta)
+Kupac(*sifra, naziv, adresa, telefon, ^JMBG_prodavca)
+	Kupac[JMBG_prodavca] < Prodavac[JMBG_zaposlenog]
+Narudzbenica(*sifra, datum, status, ^sifra_kupca)
+	Narudzbenica[sifra_kupca] < Kupac[sifra]
+Faktura(*ID, ukupan_iznos, rok_uplate)
+Uplatnica(*ID, datum, nacin_placanja, ^ID_fakture)
+	Uplatnica[ID_fakture] < Faktura[ID]
+Artikal(*sifra, naziv, jedinica_mere, rabat, knjigovodjstvena_cena, kolicina_na_zalihama, min_dopustene_zalihe)
+Dobavljac(*sifra, naziv, adresa, telefon)
+
+Prodavac(*^JMBG_zaposlenog, provizija)
+	Prodavac[JMBG_zaposlenog] < Zaposleni[JMBG]
+Otpremnica(*^sifra_narudzbenice, *datum, ^JMBG_zaposlenog, ^ID_fakture)
+	Otpremnica[sifra_narudzbenice] < Narudzbenica[datum]
+	Otpremnica[JMBG_zaposlenog] < Zaposleni[JMBG]
+	Otpremnica[ID_fakture] < Faktura[ID]
+Nabavka(*^sifra_dobavljaca, *datum, iznos)
+	Nabavka[sifra_dobavljaca] < Dobavljac[sifra]
+	
+Sadrzi(*^sifa_narudzbenice, *^sifra_artikla, cena, kolicina)
+	Sadrzi[sifra_narudzbenice] < Narudzbenica[sifra]
+	Sadrzi[sifra_artikla] < Artikal[sifra]
+Isporuceno(*^sifra_narudzbenice, *^sifra_artikla, *^datum, kolicina)
+	Isporuceno[sifra_narudzbenice, sifra_artikla] < Sadrzi[sifra_narudzbenice, sifra_artikla]
+	Isporuceno[sifra_narudzbenice, datum] < Otpremnica[sifra_narudzbenice, datum]
+Dobavlja(*^sifra_dobavljaca, *^sifra_artikla)
+	Dobavlja[sifra_dobavljaca] < Dobavljac[sifra]
+	Dobavlja[sifra_artikla] < Artikal[sifra]
+Nabavlja(*^sifra_dobavljaca, *^sifra_artikla, *^datum, kolicina, cena)
+	Nabavlja[sifra_dobavljaca, sifra_artikla] < Dobavlja[sifra_dobavljaca, sifra_artikla]
+	Nabavlja[sifra_dobavljaca, datum] < Nabavka[sifra_dobavljaca, datum]
+

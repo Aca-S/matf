@@ -20,3 +20,5 @@ Ostali asistenti:
 
 - [Čas 1]({{ site.baseurl }}{% link _projbp/cas-01.markdown %})
 - [Čas 2]({{ site.baseurl }}{% link _projbp/cas-02.markdown %})
+- [Čas 3]({{ site.baseurl }}{% link _projbp/cas-03.markdown %})
+

@@ -1,0 +1,39 @@
+* <=> <<PK>>
+^ <=> <<FK>> (Mada sustinski se vidi i iz uslova podskupa)
+< <=> podskup
+----------------
+
+// Napomena - resenje je radjeno po prilozenom dijagramu na prezentaciji sa drugog casa, a na
+// njemu fale atributi na par mesta kod odnosa (datumi za rasporedjivanje kod Rasporedjen i Saobraca).
+
+Zaposleni(*JMBG, ime, prezime, adresa, telefon)
+Autobus(*reg_broj, tip, godina_nabavke, aktivan)
+Linija(*sifra, polazna_stanica, krajnja_stanica, trajanje_voznje)
+ServisnaUsluga(*sifra, naziv, koliko_puta)
+RezervniDeo(*sifra, naziv, jedinica_mere, trenutne_zalihe, min_dozvoljene_zalihe)
+
+Vozac(*^JMBG_zaposlenog, kat_vozacke_dozvole, zdravstveno_stanje)
+	Vozac[JMBG_zaposlenog] < Zaposleni[JMBG]
+Automehanicar(*^JMBG_zaposlenog, strucna_sprema)
+	Automehanicar[JMBG_zaposlenog] < Zaposleni[JMBG]
+
+Rasporedjen(*^JMBG_vozaca, ^reg_broj_autobusa)
+	Rasporedjen[JMBG_vozaca] < Vozac[JMBG_zaposlenog]
+	Rasporedjen[reg_broj_autobusa] < Autobus[reg_broj]
+Saobraca(*^reg_broj_autobusa, ^sifra_linije)
+	Saobraca[reg_broj_autobusa] < Autobus[reg_broj]
+	Saobraca[sifra_linije] < Linija[sifra]
+Izvrsava(*^reg_broj_autobusa, *^sifra_usluge, datum, ^JMBG_automehanicara)
+	Izvrsava[reg_broj_autobusa] < Autobus[reg_broj]
+	Izvrsava[sifra_usluge] < ServisnaUsluga[sifra]
+	Izvrsava[JMBG_automehanicara] < Automehanicar[JMBG_zaposlenog]
+Potrebni(*^sifra_usluge, *^sifra_dela, kolicina)
+	Potrebni[sifra_usluge] < ServisnaUsluga[sifra]
+	Potrebni[sifra_dela] < RezervniDeo[sifra]
+Zamena(*^sifra_dela, *^sifra_zamene)
+	Zamena[sifra_dela] < RezervniDeo[sifra]
+	Zamena[sifra_zamene] < RezervniDeo[sifra]
+Koriscen(*^reg_broj_autobusa, *^sifra_usluge, *^sifra_dela, kolicina)
+	Koriscen[reg_broj_autobusa, sifra_usluge] < Izvrsava[reg_broj_autobusa, sifra_usluge]
+	Koriscen[sifra_usluge, sifra_dela] < Potrebni[sifra_usluge, sifra_dela]
+

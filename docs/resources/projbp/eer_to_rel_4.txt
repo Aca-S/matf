@@ -1,0 +1,27 @@
+Biljka(*ID, naziv, jedinica_mere, kolicina, min_dozvoljene_zalihe, aktuelna_cena)
+Mesavina(*ID, jedinica_mere, kolicina_na_zalihama, cena)
+Dobavljac(*ID, naziv, adresa, drzava, telefon)
+Narudzbina(*ID, datum, uslovi_placanja, ^ID_kupca)
+	Narudzbina[ID_kupca] < Kupac[ID]
+Racun(*ID, ukupan_iznos, ^ID_narudzbine)
+	Racun[ID_narudzbine] < Narudzbina[ID]
+Kupac(*ID, naziv, adresa, telefon, osoba_za_kontakt)
+
+Nabavka(*^ID_dobavljaca, *datum)
+	Nabavka[ID_dobavljaca] < Dobavljac[ID]
+Naplata(*^ID_racuna, *redni_broj_rate, uplacen_iznos, datum_naplate)
+	Naplata[ID_racuna] < Racun[ID]
+
+NalaziSe(*^ID_narudzbine, *^ID_mesavine, kolicina, cena)
+	NalaziSe[ID_narudzbine] < Narudzbina[ID]
+	NalaziSe[ID_mesavine] < Mesavina[ID]
+SastojiSeOd(*^ID_mesavine, *^ID_biljke, kolicina)
+	SastojiSeOd[ID_mesavine] < Mesavina[ID]
+	SastojiSeOd[ID_biljke] < Biljka[ID]
+Dobavlja(*^ID_dobavljaca, *^ID_biljke)
+	Dobavlja[ID_dobavljaca] < Dobavljac[ID]
+	Dobavlja[ID_biljke] < Biljka[ID]
+Sadrzi(*^ID_dobavljaca, *^ID_biljke, *^datum_nabavke, kolicina, cena)
+	Sadrzi[ID_dobavljaca, ID_biljke] < Dobavlja[ID_dobavljaca, ID_biljke]
+	Sadrzi[ID_dobavljaca, datum_nabavke] < Nabavka[ID_dobavljaca, datum]
+
