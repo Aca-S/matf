@@ -23,3 +23,8 @@ Ostali asistenti:
 - [Čas 3]({{ site.baseurl }}{% link _projbp/cas-03.markdown %})
 - [Čas 4]({{ site.baseurl }}{% link _projbp/cas-04.markdown %})
 - [Čas 5]({{ site.baseurl }}{% link _projbp/cas-05.markdown %})
+- [Čas 6]({{ site.baseurl }}{% link _projbp/cas-06.markdown %})
+
+### Dodatno
+
+- [Primer kolokvijuma]({{ site.baseurl }}{% link _projbp/primer-kolokvijuma.markdown %})
