@@ -20,3 +20,8 @@ title: Čas 5 - Normalizacija
   izgubljene funkcionalne zavisnosti *ime artikla ⟶ sekcija*, uopšte ne bi
   ni bilo izvršeno razbijanje relacije artikala, jer nakon dovođenja u 2NF, relacija
   bi bila i u 3NF.
+- U primeru 3 u zadacima za vežbanje se transformacija funkcionalnih zavisnosti
+  FZ1 do FZ6 iz *SIFN, SIFC, DATUM ⟶ ...* u *SIFK, SIFC, DATUM ⟶ ...* može
+  izvršiti bez gubitka funkcionalnih zavisnosti usled osobine tranzitivnosti i:
+  - *SIFK ⟶ SIFN (proširivost) ⇒ SIFK, SIFC, DATUM ⟶ SIFN, SIFC, DATUM*
+  - *SIFN, SIFC, DATUM ⟶ SIFK (refleksivnost + unija) ⇒ SIFN, SIFC, DATUM ⟶ SIFK, SIFC, DATUM*
