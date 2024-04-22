@@ -31,3 +31,4 @@ Ostali asistenti:
 ### Dodatno
 
 - [Primer kolokvijuma]({{ site.baseurl }}{% link _projbp/primer-kolokvijuma.markdown %})
+- [Kolokvijum 2024]({{ site.baseurl }}{% link _projbp/kolokvijum-2024.markdown %})
