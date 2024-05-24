@@ -1,0 +1,98 @@
+R(sifra_pesme, sifra_pevaca, tekstopisac, producent, naziv_pesme, ime_pevaca, datum, duzina_pesme)
+
+FZ#1: sifra_pesme, sifra_pevaca, producent -> datum
+FZ#2: sifra_pesme, sifra_pevaca, producent -> duzina_pesme
+FZ#3: sifra_pevaca -> ime_pevaca
+FZ#4: sifra_pesme, sifra_pevaca -> naziv_pesme
+FZ#5: naziv_pesme, ime_pevaca -> tekstopisac
+FZ#6: naziv_pesme -> duzina_pesme
+
+KK: {sifra_pesme, sifra_pevaca, producent}+ = {sifra_pesme, sifra_pevaca, producent, datum, duzina_pesme, ime_pevaca, naziv_pesme, tekstopisac}
+
+FZ#3, FZ#4 narusavaju 2NF (nekljucni atribut zavisi od pravog podskupa nekog kljuca)
+
+Dekompozicija po FZ#3:
+R1(sifra_pevaca, ime_pevaca)
+	FZ#1.1: sifra_pevaca -> ime_pevaca
+R2(sifra_pesme, sifra_pevaca, tekstopisac, producent, naziv_pesme, datum, duzina_pesme)
+	FZ#2.1: sifra_pesme, sifra_pevaca, producent -> datum
+	FZ#2.2: sifra_pesme, sifra_pevaca, producent -> duzina_pesme
+	FZ#2.3: sifra_pesme, sifra_pevaca -> naziv_pesme
+	FZ#2.4: naziv_pesme -> duzina_pesme
+
+Problem: Gubi se FZ#5: naziv_pesme, ime_pevaca -> tekstopisac
+
+Dekompozicija po FZ#5:
+R1(naziv_pesme, ime_pevaca, tekstopisac)
+	FZ#1.1: naziv_pesme, ime_pevaca -> tekstopisac
+	KK#1.1: {naziv_pesme, ime_pevaca}
+R2(sifra_pesme, sifra_pevaca, producent, naziv_pesme, ime_pevaca, datum, duzina_pesme)
+	FZ#2.1: sifra_pesme, sifra_pevaca, producent -> datum
+	FZ#2.2: sifra_pesme, sifra_pevaca, producent -> duzina_pesme
+	FZ#2.3: sifra_pevaca -> ime_pevaca
+	FZ#2.4: sifra_pesme, sifra_pevaca -> naziv_pesme
+	FZ#2.5: naziv_pesme -> duzina_pesme
+	KK#2.1: {sifra_pesme, sifra_pevaca, producent}
+
+FZ#2.3 i FZ#2.4 i dalje narusavaju 2NF
+
+Dekompozicija po FZ#2.3:
+R1(naziv_pesme, ime_pevaca, tekstopisac)
+	FZ#1.1: naziv_pesme, ime_pevaca -> tekstopisac
+	KK#1.1: {naziv_pesme, ime_pevaca}
+R2(sifra_pevaca, ime_pevaca)
+	FZ#2.1: sifra_pevaca -> ime_pevaca
+	KK#2.1: {sifra_pevaca}
+R3(sifra_pesme, sifra_pevaca, producent, naziv_pesme, datum, duzina_pesme)
+	FZ#3.1: sifra_pesme, sifra_pevaca, producent -> datum
+	FZ#3.2: sifra_pesme, sifra_pevaca, producent -> duzina_pesme
+	FZ#3.3: sifra_pesme, sifra_pevaca -> naziv_pesme
+	FZ#3.4: naziv_pesme -> duzina_pesme
+	KK#3.1: {sifra_pesme, sifra_pevaca, producent}
+
+FZ#3.3 narusava 2NF, ali ce dekompozicija po njoj dovesti do gubitka FZ#3.4, pa prvo dekomponujemo po njoj
+
+Dekompozicija po FZ#3.4:
+R1(naziv_pesme, ime_pevaca, tekstopisac)
+	FZ#1.1: naziv_pesme, ime_pevaca -> tekstopisac
+	KK#1.1: {naziv_pesme, ime_pevaca}
+R2(sifra_pevaca, ime_pevaca)
+	FZ#2.1: sifra_pevaca -> ime_pevaca
+	KK#2.1: {sifra_pevaca}
+R3(naziv_pesme, duzina_pesme)
+	FZ#3.1: naziv_pesme -> duzina_pesme
+	KK#3.1: {naziv_pesme}
+R4(sifra_pesme, sifra_pevaca, producent, naziv_pesme, datum)
+	FZ#4.1: sifra_pesme, sifra_pevaca, producent -> datum
+	FZ#4.2: sifra_pesme, sifra_pevaca -> naziv_pesme
+	KK#4.1: {sifra_pesme, sifra_pevaca, producent}
+
+"Gubi se" FZ#3.2: sifra_pesme, sifra_pevaca, producent -> duzina_pesme,
+medjutim, ako bolje pogledamo, ona se moze izvesti iz FZ#3.3 i FZ#3.4 preko tranzitivnosti.
+FZ#4.2 i dalje narusava 2NF.
+
+Dekompozicija po FZ#4.2:
+R1(naziv_pesme, ime_pevaca, tekstopisac)
+	FZ#1.1: naziv_pesme, ime_pevaca -> tekstopisac
+	KK#1.1: {naziv_pesme, ime_pevaca}
+R2(sifra_pevaca, ime_pevaca)
+	FZ#2.1: sifra_pevaca -> ime_pevaca
+	KK#2.1: {sifra_pevaca}
+R3(naziv_pesme, duzina_pesme)
+	FZ#3.1: naziv_pesme -> duzina_pesme
+	KK#3.1: {naziv_pesme}
+R4(sifra_pesme, sifra_pevaca, naziv_pesme)
+	FZ#4.1: sifra_pesme, sifra_pevaca -> naziv_pesme
+	KK#4.1: {sifra_pesme, sifra_pevaca}
+R5(sifra_pesme, sifra_pevaca, producent, datum)
+	FZ#5.1: sifra_pesme, sifra_pevaca, producent -> datum
+	KK#5.1: {sifra_pesme, sifra_pevaca, producent}
+
+R1xR2xR3xR4xR5 je u 2NF, a istovremeno i u 3NF i BCNF.
+
+
+
+
+
+
+
