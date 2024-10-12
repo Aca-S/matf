@@ -15,3 +15,8 @@ Sajt profesora:
 
 ### Časovi
 - [Čas 1]({{ site.baseurl }}{% link _urbp/cas-01.markdown %})
+
+### Korisni linkovi
+- [Sajt predmeta "Relacione baze podataka" na I smeru](https://www.bazepodataka.matf.bg.ac.rs/RelacioneBazePodataka.html)
+- [Sajt koleginice Milice Gnjatović](https://milicagnjatovic.github.io/)
+- [Sajt kolege Milana Čugurovića](http://poincare.matf.bg.ac.rs/~milan.cugurovic/urbp.html)
