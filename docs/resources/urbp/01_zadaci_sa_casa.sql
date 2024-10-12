@@ -153,7 +153,7 @@ FROM	DA.STUDENT
 WHERE	MESTORODJENJA IS NULL; -- Hint: U bazi nema takvih studenata!
 
 -- 26. Prikazati, u jednom redu i tri kolone, trenutni datum, trenutno vreme, i trenutni datum sa preciznim vremenom.
-VALUES	CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP
+VALUES	(CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP);
 
 -- 27. Prikazati, u tri reda i tri kolone, prirodne brojeve od 1 do 9.
 VALUES	(1, 2, 3), (4, 5, 6), (7, 8, 9);
