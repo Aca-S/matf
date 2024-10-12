@@ -6,6 +6,7 @@ title: Čas 1 - Uvod u SQL
 ### Materijali
 - [Zadaci sa časa]({{ site.baseurl }}{% link resources/urbp/01_zadaci_sa_casa.sql %})
 - [Zadaci za vežbu]({{ site.baseurl }}{% link resources/urbp/01_zadaci_za_vezbu.sql %})
+- [Dijagram baze stud2020]({{ site.baseurl }}{% link resources/urbp/dijagram_stud2020.png %})
 
 ### Uputstva
 
