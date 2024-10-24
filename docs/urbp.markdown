@@ -16,6 +16,7 @@ Sajt profesora:
 ### Časovi
 - [Čas 1]({{ site.baseurl }}{% link _urbp/cas-01.markdown %})
 - [Čas 2]({{ site.baseurl }}{% link _urbp/cas-02.markdown %})
+- [Čas 3]({{ site.baseurl }}{% link _urbp/cas-03.markdown %})
 
 ### Korisni linkovi
 - [Sajt predmeta "Relacione baze podataka" na I smeru](https://www.bazepodataka.matf.bg.ac.rs/RelacioneBazePodataka.html)
