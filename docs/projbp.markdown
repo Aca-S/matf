@@ -4,7 +4,9 @@ title: Projektovanje baza podataka
 permalink: /projbp/
 ---
 
-### Osnovne informacije
+Sve informacije o kursu i materijale možete naći na [ovom sajtu](https://www.bazepodataka.matf.bg.ac.rs/ProjektovanjeBazaPodataka.html).
+
+<!--### Osnovne informacije
 
 Termin vežbi:
 - Četvrtkom od 12h do 15h u kabinetu 704
@@ -14,9 +16,9 @@ Sajt profesora:
 
 Ostali asistenti:
 - [Nikola Katić](http://poincare.matf.bg.ac.rs/~nikola.katic/)
-- [Vasilije Todorović](http://poincare.matf.bg.ac.rs/~vasilije.todorovic/)
+- [Vasilije Todorović](http://poincare.matf.bg.ac.rs/~vasilije.todorovic/)-->
 
-### Časovi
+### Stari materijali
 
 - [Čas 1]({{ site.baseurl }}{% link _projbp/cas-01.markdown %})
 - [Čas 2]({{ site.baseurl }}{% link _projbp/cas-02.markdown %})
@@ -31,8 +33,5 @@ Ostali asistenti:
 - [Čas 11]({{ site.baseurl }}{% link _projbp/cas-11.markdown %})
 - [Čas 12]({{ site.baseurl }}{% link _projbp/cas-12.markdown %})
 - [Čas 13]({{ site.baseurl }}{% link _projbp/cas-13.markdown %})
-
-### Dodatno
-
 - [Primer kolokvijuma]({{ site.baseurl }}{% link _projbp/primer-kolokvijuma.markdown %})
 - [Kolokvijum 2024]({{ site.baseurl }}{% link _projbp/kolokvijum-2024.markdown %})
