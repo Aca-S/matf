@@ -16,7 +16,7 @@ Sajt profesora:
 
 Ostali asistenti:
 - [Nikola Katić](http://poincare.matf.bg.ac.rs/~nikola.katic/)
-- [Vasilije Todorović](http://poincare.matf.bg.ac.rs/~vasilije.todorovic/)-->
+- [Vasilije Todorović](http://poincare.matf.bg.ac.rs/~vasilije.todorovic/)
 
 ### Stari materijali
 
@@ -34,4 +34,4 @@ Ostali asistenti:
 - [Čas 12]({{ site.baseurl }}{% link _projbp/cas-12.markdown %})
 - [Čas 13]({{ site.baseurl }}{% link _projbp/cas-13.markdown %})
 - [Primer kolokvijuma]({{ site.baseurl }}{% link _projbp/primer-kolokvijuma.markdown %})
-- [Kolokvijum 2024]({{ site.baseurl }}{% link _projbp/kolokvijum-2024.markdown %})
+- [Kolokvijum 2024]({{ site.baseurl }}{% link _projbp/kolokvijum-2024.markdown %})-->
