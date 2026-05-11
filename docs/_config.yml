@@ -36,7 +36,7 @@ plugins:
 collections:
   projbp:
     output: true
-  urbp:
+  rbp:
     output: true
 
 # Exclude from processing.
