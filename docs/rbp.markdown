@@ -20,6 +20,7 @@ ali ovde će biti kačena i rešenja zadataka sa vežbi sa detaljnim komentarima
 
 Napomena - trenutno fali veliki broj časova, ali potrudiću se da upotpunim listu što pre.
 
+- [Čas 3]({{ site.baseurl }}{% link resources/rbp/cas_03.sql %})
 - [Čas 5]({{ site.baseurl }}{% link resources/rbp/cas_05.sql %})
 
 ### Korisni linkovi
