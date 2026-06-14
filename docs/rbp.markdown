@@ -25,6 +25,7 @@ Napomena - trenutno fali veliki broj časova, ali potrudiću se da upotpunim lis
 - [Čas 6]({{ site.baseurl }}{% link resources/rbp/cas_06.sql %})
 - [Čas 7]({{ site.baseurl }}{% link resources/rbp/cas_07.sql %})
 - [Čas 8]({{ site.baseurl }}{% link resources/rbp/cas_08.sql %})
+- [Čas 9]({{ site.baseurl }}{% link resources/rbp/cas_09.sql %})
 
 ### Korisni linkovi
 
