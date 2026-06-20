@@ -26,6 +26,8 @@ Napomena - trenutno fali veliki broj časova, ali potrudiću se da upotpunim lis
 - [Čas 7]({{ site.baseurl }}{% link resources/rbp/cas_07.sql %})
 - [Čas 8]({{ site.baseurl }}{% link resources/rbp/cas_08.sql %})
 - [Čas 9]({{ site.baseurl }}{% link resources/rbp/cas_09.sql %})
+- [Čas 12 - januar 2024]({{ site.baseurl }}{% link resources/rbp/jan_2024.zip %})
+- [Čas 12 - februar 2024]({{ site.baseurl }}{% link resources/rbp/feb_2024.zip %})
 
 ### Korisni linkovi
 
