@@ -1,0 +1,474 @@
+NAPOMENA:
+
+Uputstvo za instalaciju RARRChecker-a i strukturu pojednostavljene
+baze nad kojom radimo naredne zadatke pogledati kod Milice na sajtu.
+
+RARRChecker je, na žalost, poprilično bagovit, te u nekim situacijama
+daje pogrešne rezultate, što treba imati u vidu.
+
+-------------------------------------------------------------------
+
+1) Izdvojiti podatke o svim predmetima.
+
+Rešenje:
+
+predmet
+
+Objašnjenje:
+
+Jezik relacione algebre definiše strukturu tzv. relacionih izraza.
+Najjednostavniji relacioni izraz jeste upravo jedna relacija, tj.
+njen naziv. Složeniji relacioni izrazi se onda grade povezivanjem
+relacija pomoću različitih operatora relacione algebre sa kojima
+ćemo se polako upoznavati kroz naredne primere.
+
+U ovom zadatku, dovoljan nam je upravo najjednostavniji relacioni
+izraz - samo želimo relaciju "predmet", bez ikakvih transformacija
+nad njom.
+
+SQL-ov pandan ovome bi bio upit:
+
+SELECT DISTINCT * FROM PREDMET;
+
+Važna napomena: Rezultat relacionog izraza je relacija, a relacija
+je, po definiciji, skup. Pošto skupovi nemaju duplikate, ni rezultat
+relacionog izraza ih neće imati, te je iz tog razloga dodat DISTINCT
+u prethodnom (i svim narednim) SQL primeru.
+
+-------------------------------------------------------------------
+
+2) Izdvojiti oznake i nazive predmeta.
+
+Rešenje:
+
+predmet[oznaka, naziv]
+
+Objašnjenje:
+
+Za razliku od prethodnog zadatka, sada želimo da dohvatimo samo
+neke od kolona relacije predmet. Ovo možemo postići pomoću relacionog
+operatora projekcije.
+
+Relacioni operator projekcije, oblika "R[col1, col2, ..., colN]", kao
+operande prihvata relaciju R i listu kolona koje "želimo da zadržimo"
+iz te relacije. Rezultat je relacija sa samo traženim kolonama.
+
+SQL-ov pandan ovome bi bio upit:
+
+SELECT DISTINCT OZNAKA, NAZIV FROM PREDMET;
+
+-------------------------------------------------------------------
+
+3) Izdvojiti podatke o predmetima koji imaju po 6 espb bodova.
+
+Rešenje:
+
+predmet where espb = 6
+
+Objašnjenje:
+
+Relacioni operator restrikcije, oblika "R where <uslov>" nam omogućava
+izdvajanja podskupa redova (torki) koji zadovoljavaju neki uslov iz
+polazne relacije R.
+
+SQL-ov pandan ovome bi bio upit:
+
+SELECT DISTINCT * FROM PREDMET WHERE ESPB = 6;
+
+-------------------------------------------------------------------
+
+4) Izdvojiti oznake i nazive predmeta koji imaju po 6 espb bodova.
+
+Neispravan pokušaj (česta greška):
+
+predmet[oznaka, naziv] where espb = 6
+
+Objašnjenje:
+
+Iako možda izgleda ispravno, ovakav relacioni izraz to nije! Naime,
+projekcijom na samo oznaku i naziv u relaciji predmet, kao rezultat
+smo dobili relaciju koja NEMA kolonu espb, te uslov nad tom kolonom
+onda nije moguć u operatoru restrikcije.
+
+Rešenje:
+
+(predmet where espb = 6)[oznaka, naziv]
+
+Objašnjenje:
+
+Prethodni problem se jednostavno rešava tako što prvo izvršimo restrikciju
+(dok još uvek imamo kolonu espb), pa tek onda projekciju.
+
+SQL-ov pandan ovome bi bio upit:
+
+SELECT DISTINCT OZNAKA, NAZIV FROM PREDMET WHERE ESPB = 6;
+
+-------------------------------------------------------------------
+
+5) Izdvojiti ime i prezime studenta sa indeksom 25/2014.
+
+Rešenje:
+
+(dosije where indeks = 20140025)[ime, prezime]
+
+Objašnjenje:
+
+Ista ideja kao prethodni zadatak, samo sa drugom relacijom.
+
+-------------------------------------------------------------------
+
+6) Izdvojiti indekse studenata koji imaju ocenu 10 ili 9.
+
+Rešenje 1:
+
+(ispit where ocena = 10 or ocena = 9)[indeks]
+
+Objašnjenje:
+
+U uslovima restrikcije možemo koristiti i logičke veznike or i and.
+Imati u vidu da rezultujuća relacija ovog izraza neće imati duplikate
+(neki student je možda položio više ispita sa ocenom 10 ili 9) jer
+se duplikati implicitno uklanjaju.
+
+Rešenje 2:
+
+(ispit where ocena = 10)[indeks]
+union
+(ispit where ocena = 9)[indeks]
+
+Objašnjenje:
+
+Alternativno rešenje podrazumeva upotrebu relacionog operatora unije,
+tj. R1 union R2. Broj i tipovi kolona relacija R1 i R2 se, kao i u SQL-u,
+moraju poklapati.
+
+SQL-ov pandan ovome bi bio upit:
+
+SELECT INDEKS
+FROM ISPIT WHERE OCENA = 10
+UNION
+SELECT INDEKS
+FROM ISPIT WHERE OCENA = 9;
+
+-------------------------------------------------------------------
+
+7) Izdvojiti indekse studenata koji imaju ocenu 10 i 9.
+
+Rešenje:
+
+(ispit where ocena = 10)[indeks]
+intersect
+(ispit where ocena = 9)[indeks]
+
+Objašnjenje:
+
+Relaciona algebra nam pruža i operator preseka, tj. R1 intersect R2.
+
+Rešenje poput (ispit where ocena = 10 and ocena = 9)[indeks]
+bi ovde bilo pogrešno jer ono pokušava da nađe ispite (pojedinačne
+redove, tj. torke) koji istovremeno imaju ocenu i 10 i 9, što je,
+naravno, nemoguće.
+
+-------------------------------------------------------------------
+
+8) Izdvojiti indekse studenata koji imaju ocenu 10, a nemaju ocenu 9.
+
+Rešenje:
+
+(ispit where ocena = 10)[indeks]
+minus
+(ispit where ocena = 9)[indeks]
+
+Objašnjenje:
+
+Skupovna razlika nam je pružena kroz operator R1 minus R2.
+
+-------------------------------------------------------------------
+
+9) Izdvojiti indekse studenata koji imaju samo ocenu 10.
+
+Rešenje:
+
+(ispit where ocena = 10)[indeks]
+minus
+(ispit where ocena <> 10)[indeks]
+
+Objašnjenje:
+
+Ideja ovde je da prvo nađemo sve one studente koji su dobili neku
+desetku, a onda iz toga (pomoću skupovne razlike) izbacimo sve one
+studente koji su dobili bilo koju drugu ocenu. Operator različitosti
+nam je, slično kao u SQL-u, "<>".
+
+-------------------------------------------------------------------
+
+10) Pronaći studente koji su upisali fakultet kada je održan neki ispit.
+    Izdvojiti indeks, ime i prezime studenta.
+
+Rešenje:
+
+((dosije times ispit) where dosije.datupisa = ispit.datpolaganja)[dosije.indeks, dosije.ime, dosije.prezime]
+
+Objašnjenje:
+
+U relaciji dosije imamo podatak o datumu upisa studenata (kao i o
+indeksu, imenu i prezimenu), dok nam se podatak o datumu održavanja
+ispita nalazi u koloni "datpolaganja" relaciji ispit.
+
+Prema ovome, potrebno je nekako napraviti vezu između ove dve relacije.
+U SQL-u, ovo bismo uradili spajanjem tabela. Slično možemo uraditi
+i ovde pomoću operatora Dekartovog proizvoda, tj. R1 times R2.
+
+Nakon spajanja pomoću Dekartovog proizvoda, redove koji ne zadovoljavaju
+traženi uslov spajanja (ne poklapa se datupisa i datpolaganja) možemo
+odbaciti operatorom restrikcije.
+
+Pošto u ovom izrazu učestvuju dve relacije, potrebno je navesti na
+koju tačno relaciju od ove dve mislimo kada referišemo na neku kolonu
+(npr. i relacija dosije i relacija ispit imaju svoje kolone "indeks").
+Ovo možemo izvesti sa navođenjem naziva polazne relacije uz naziv kolone,
+na primer "dosije.indeks" za pristup koloni indeks koja odgovara polaznoj
+relaciji dosije.
+
+SQL-ov pandan ovome bi bio upit:
+
+SELECT DISTINCT DOSIJE.INDEKS, DOSIJE.IME, DOSIJE.PREZIME
+FROM DOSIJE, ISPIT
+WHERE DOSIJE.DATUPISA = ISPIT.DATPOLAGANJA;
+
+-------------------------------------------------------------------
+
+11) Za svakog studenta izdvojiti podatke o ispitima koje je polagao.
+    Izdvojiti indeks, ime, prezime studenta, identifikator predmeta i ocenu koju je dobio.
+
+Rešenje 1:
+
+((dosije times ispit) where dosije.indeks = ispit.indeks)[dosije.indeks, dosije.ime, dosije.prezime, ispit.idpredmeta, ispit.ocena]
+
+Objašnjenje:
+
+Slična ideja kao prethodni zadatak. Uslov spajanja je sada po indeksu
+studenta.
+
+Rešenje 2:
+
+(dosije join ispit)[dosije.indeks, dosije.ime, dosije.prezime, ispit.idpredmeta, ispit.ocena]
+
+Objašnjenje:
+
+Zadatak možemo rešiti i na nešto jednostavniji (kraći) način pomoću
+operatora prirodnog spajanja, tj. R1 join R2. Za razliku od Dekartovog
+proizvoda, prirodno spajanje implicitno vrši spajanje po onim kolonama
+iz R1 i R2 čiji se naziv i tip poklapaju. U slučaju relacija dosije i
+ispit, to je kolona "indeks".
+
+Prema tome, "dosije join ispit" vrši spajanje na isti način kao da smo
+imali izraz "(dosije times ispit) where dosije.indeks = ispit.indeks".
+
+Iako izgleda korisno, sa ovakvim, implicitnim uslovom spajanja koji
+zavisi od tipa i naziva kolona treba biti veoma oprezan, što ćemo i
+videti već u narednom primeru.
+
+-------------------------------------------------------------------
+
+12) Izdvojiti nazive ispitnih rokova u kojima je položen predmet Analiza 1.
+
+Neispravan pokušaj:
+
+((ispit join predmet join ispitnirok) where predmet.naziv = 'Analiza 1')[naziv]
+
+Objašnjenje:
+
+Greška nastaje već u delu "ispit join predmet join ispitnirok".
+Prvo smo spojili ispite i odgovarajuće predmete sa "ispit join predmet".
+To spajanje je bilo uspešno. Međutim, ako dodamo još "... join ispitnirok",
+primetićemo da je rezultat prazna relacija. Šta se ovde desilo?
+
+Razlog za ovo je to što i relacija predmet i relacija ispitnirok imaju
+kolone koje se zove "naziv" i istog su tipa. Prirodno spajanje onda
+pokušava da napravi spajanje po njima, ali, naravno, ovo nikad ne uspeva
+(provere su npr. oblika "Programiranje 1" = "Februar 2015")...
+
+Rešenje:
+
+(ispit join ispitnirok join (predmet where naziv = 'Analiza 1')[idpredmeta])[ispitnirok.naziv]
+
+Objašnjenje:
+
+Prethodni problem možemo rešiti tako što pre samog spajanja iz relacije
+predmet uklonimo kolonu naziv (pošto nam ona nije potrebna nigde nakon
+restrikcije). Alternativno rešenje bi bilo da umesto prirodnog spajanja
+koristimo Dekartov proizvod i sami navedemo uslove spajanja.
+
+-------------------------------------------------------------------
+
+13) Izdvojiti identifikatore predmeta koje su polagali svi studenti.
+
+Rešenje:
+
+ispit[indeks, idpredmeta]
+divideby
+dosije[indeks]
+
+Objašnjenje:
+
+U SQL-u, ovako nešto bismo verovatno rešili pomoću EXISTS uslova
+(...ne postoji student koji nije polagao taj predmet...). Na žalost,
+u relacionoj algebri nemamo tako nešto, ali ono što imamo je tzv.
+operator deljenja!
+
+Neka su nam date neke dve relacije R1 i R2. Neka relacija R1 ima
+(skupove) kolona X i Y, a R2 samo kolone X, tj. R1[X, Y] i R2[X].
+Rezultat operatora deljenja, tj. R1 divideby R2, je relacija R3
+koja ima samo kolone iz Y (tj. R3[Y]) i sadrži one torke (redove)
+iz R1, projektovane na Y, koje su uparene sa SVIM torkama iz R2.
+
+Možda zvuči malo konfuzno, ali pogledajmo primer mali (ograničeni)
+primer operacije deljenja u akciji:
+
+ISPIT[IDPREDMETA, INDEKS]        DOSIJE[INDEKS]        ISPIT[IDPREDMETA, INDEKS] DIVIDEBY DOSIJE[INDEKS]
+
+IDPREDMETA | INDEKS              INDEKS                IDPREDMETA
+---------------------            --------              ----------
+      1001 | 20110001            20110001                    1001
+      1001 | 20110002            20110002
+      1001 | 20110003            20110003
+      ---------------
+      1002 | 20110002
+      1002 | 20110003
+      ---------------
+      1003 | 20110001
+
+Zašto je u rezultujućoj relaciji samo predmet 1001? Zato što samo taj
+predmet, u relaciji ispit[idpredmeta, indeks], u svojoj "grupi" sadrži
+sve studente iz dosije[indeks]. Predmetu 1002 fali student 20110001, a
+predmetu 1003 studenti 20110002 i 20110003. U terminima SQL-a, zamislite
+da smo uradili GROUP BY po koloni IDPREDMETA (kolone Y) i proverili da li
+se napravljene grupe za svaki od predmeta poklapaju sa tabelom sa kojom
+delimo.
+
+-------------------------------------------------------------------
+
+14) Izdvojiti parove predmeta koji imaju isti broj bodova.
+    Izdvojiti oznake i nazive predmeta.
+
+Rešenje:
+
+define alias p1 for predmet
+define alias p2 for predmet
+
+((p1 times p2) where p1.espb = p2.espb and p1.idpredmeta < p2.idpredmeta)[p1.oznaka, p1.naziv, p2.oznaka, p2.naziv]
+
+Objašnjenje:
+
+Potrebno je spojiti relaciju predmet samu sa sobom. Međutim, da bi to
+bilo moguće, potreban nam je način da na ove dve "kopije" relacije
+referišemo sa različitim imenima. Ovo je moguće izvesti pomoću alias-a,
+tj. uvođenja drugog naziva za neku relaciju.
+
+Ovo se izvodi sa "define alias <naziv> for <relacija>".
+
+Dekartovim proizvodom i restrikcijom onda napravimo spajanje po espb
+(napomena - prirodno spajanje ovde ne bi radilo, jer bi se vršilo po
+svim kolonama umesto samo po espb, tj. spojili bismo svaki predmet sa
+samim sobom). Uslov p1.idpredmeta < p2.idpredmeta dodajemo radi razbijanja
+simetrije u rezultatu, tj. izbegavanja ponavljanja parova predmeta sa
+samo različitim pozivijama (p1, p2) i (p2, p1).
+
+SQL-ov pandan ovome bi bio upit:
+
+SELECT P1.OZNAKA, P1.NAZIV,
+       P2.OZNAKA, P2.NAZIV
+FROM PREDMET AS P1,
+     PREDMET AS P2
+WHERE P1.ESPB = P2.ESPB AND
+      P1.IDPREDMETA < P2.IDPREDMETA;
+
+Napomena - RARRChecker ovde daje pogrešan rezultat.
+
+-------------------------------------------------------------------
+
+15) Izdvojiti indekse studenata koji nisu polagali ispite u ispitnom roku sa oznakom apr.
+
+Rešenje:
+
+dosije[indeks]
+minus
+(ispit where oznakaroka = 'apr')[indeks]
+
+-------------------------------------------------------------------
+
+16) Pronaći ispitni rok u kome su isti predmet polagali svi studenti.
+    Izdvojiti šk. godinu roka, oznaku roka i identifikator predmeta.
+
+Rešenje:
+
+ispit[skgodina, oznakaroka, idpredmeta, indeks]
+divideby
+dosije[indeks]
+
+-------------------------------------------------------------------
+
+17) Izdvojiti identifikatore predmeta koji imaju više od 5 bodova ili
+    ih je položio neki student 20.01.2015.
+
+Rešenje:
+
+(predmet where espb > 5)[idpredmeta]
+union
+(ispit where datpolaganja = '20.01.2015' and ocena > 5)[idpredmeta]
+
+-------------------------------------------------------------------
+
+18) Izdvojiti identifikatore predmeta koji imaju više od 5 bodova i
+    nije ih položio neki student 20.01.2015.
+
+Rešenje:
+
+(predmet where espb > 5)[idpredmeta]
+minus
+(ispit where datpolaganja = '20.01.2015' and ocena > 5)[idpredmeta]
+
+-------------------------------------------------------------------
+
+19) Pronaći predmet sa najvećim brojem espb bodova.
+    Izdvojiti naziv i broj espb bodova predmeta.
+
+Rešenje:
+
+define alias p1 for predmet
+define alias p2 for predmet
+define alias p3 for predmet
+
+p3[naziv, espb]
+minus
+((p1 times p2) where p1.espb < p2.espb)[p1.naziv, p1.espb]
+
+Objašnjenje:
+
+Ovo je generalna strategija koja se može upotrebiti za nalaženja minimuma
+i maksimuma u relacionoj algebri.
+
+Izraz "(p1 times p2) where p1.espb < p2.espb" će nam dati parove predmeta,
+ali takve da u koloni p1.espb sada imamo sve vrednosti za espb OSIM one najveće,
+a u koloni p2.espb imamo sve vrednosti za espb OSIM one najmanje.
+
+Ako onda napravimo projekciju na [p1.naziv, p1.espb], dobijamo skup
+svih predmeta osim onih sa najvećim brojem espb. Dobijanje najvećeg
+sada jednostavno rešavamo običnom operacijom razlike.
+
+-------------------------------------------------------------------
+
+20) Pronaći studenta koji je u jednoj šk. godini položio sve predmete.
+    Izdvojiti šk. godinu i indeks.
+
+Rešenje:
+
+(ispit where ocena > 5)[indeks, skgodina, idpredmeta]
+divideby
+predmet[idpredmeta]
+
+Objašnjenje:
+
+Efektivno "grupišemo" po kolonama indeks i skgodina, pa gledamo u kojim
+tako dobijenim grupama imamo sve predmete.
