@@ -1,0 +1,689 @@
+NAPOMENA:
+
+Uputstvo za instalaciju RARRChecker-a i strukturu pojednostavljene
+baze nad kojom radimo naredne zadatke pogledati kod Milice na sajtu.
+
+RARRChecker je, na žalost, poprilično bagovit, te u nekim situacijama
+daje pogrešne rezultate, što treba imati u vidu.
+
+-------------------------------------------------------------------
+
+1) Izdvojiti podatke o svim predmetima.
+
+Rešenje:
+
+range of p is predmet
+
+p.*
+
+Objašnjenje:
+
+Svaki izraz relacionog računa prethodi definicija tzv. relacionih
+promenljivih n-torki koje će se dalje koristiti u izrazu. Ove promenljive,
+definisane sa "range of <promenljiva> is <relacija>", mogu uzeti
+vrednosti redova, tj. torki iz relacije nad kojom su definisane.
+Ovo je jako slično uvođenju alias-a u relacionoj algebri, samo što
+je ono sada obavezno da bi referisali na neku relaciju.
+
+U ovom zadatku, jedina relacija koju koristimo je relacija predmet.
+Promenljiva p koju smo definisali nad njom onda može imati vrednost
+bilo kog predmeta.
+
+Nakon definicije promenljivih, izraz započinje listom kolona, tj. atributa
+nad definisanim promenljivama koje želimo da izdvojimo (slično kao SQL-ov SELECT).
+U ovom slučaju, ako želimo da izdvojimo sve atribute relacije p, to
+možemo učiniti sa "p.*".
+
+SQL-ov pandan ovome bi bio upit:
+
+SELECT DISTINCT P.* FROM PREDMET AS P;
+
+Napomena: RARRChecker ne prepoznaje "*" kao leksemu, pa bi ovakav izraz
+prijavljivao grešku. Ovo je moguće zaobići eksplicitnim navođenjem svih
+kolona relacije prilikom selekcije. Na samom ispitu smete koristiti "*"
+ako je potrebno izdvojiti sve atribute neke relacije.
+
+-------------------------------------------------------------------
+
+2) Izdvojiti oznake i nazive predmeta.
+
+Rešenje:
+
+range of p is predmet
+
+p.oznaka, p.naziv
+
+Objašnjenje:
+
+Ako ne želimo sve atribute relacije predmet, to možemo uraditi projekcijom,
+tj. navođenjem liste nekog podskupa atributa njoj odgovarajuće promenljive.
+
+SQL-ov pandan ovome bi bio upit:
+
+SELECT DISTINCT P.OZNAKA, P.NAZIV FROM PREDMET AS P;
+
+-------------------------------------------------------------------
+
+3) Izdvojiti podatke o predmetima koji imaju po 6 espb bodova.
+
+Rešenje:
+
+range of p is predmet
+
+p.*              -- ili p.idpredmeta, p.oznaka, p.naziv, p.espb da bi radilo u RARRChecker-u
+where p.espb = 6
+
+Objašnjenje:
+
+Slično kao i u relacionoj algebri (pa i u SQL-u), restrikciju nad
+mogućim vrednostima definisanih promenljivih možemo izvršiti pomoću
+operatora restrikcije "where <uslov>".
+
+-------------------------------------------------------------------
+
+4) Izdvojiti oznake i nazive predmeta koji imaju po 6 espb bodova.
+
+Rešenje:
+
+range of p is predmet
+
+p.oznaka, p.naziv
+where p.espb = 6
+
+Objašnjenje:
+
+Za razliku od relacione algebre, prilikom restrikcije možemo referisati
+i na kolone (atribute) koji nisu nužno zadržani prilikom projekcije.
+
+-------------------------------------------------------------------
+
+5) Za svakog studenta izdvojiti podatke o polaganim ispitima.
+   Izdvojiti indeks studenta, naziv polaganog predmeta i ocenu koju je dobio.
+
+Rešenje:
+
+range of i is ispit
+range of p is predmet
+
+i.indeks, p.naziv, i.ocena
+where i.idpredmeta = p.idpredmeta
+
+Objašnjenje:
+
+Potrebno je da izvršimo spajanje relacija ispit i predmet. Međutim,
+za razliku od relacione algebre, ovde nemamo eksplicitan operator
+spajanja ili proizvoda.
+
+Ukoliko u selekciji izdvajamo atribute iz više promenljivih, rezultat
+je Dekartov proizvod vrednosti tih promenljivih. Ovde, na primer, selektujemo
+atribute iz promenljivih i i p, te će se napraviti njihov proizvod.
+One vrednosti koje nam ne trebaju (uslov spajanja) možemo definisati
+sa operatorom restrikcije (where).
+
+SQL-ov pandan ovome bi bio upit:
+
+SELECT DISTINCT I.INDEKS, P.NAZIV, I.OCENA
+FROM ISPIT AS I, PREDMET AS P
+WHERE I.IDPREDMETA = P.IDPREDMETA;
+
+-------------------------------------------------------------------
+
+6) Izdvojiti parove predmeta koji imaju isti broj bodova.
+   Izdvojiti oznake i nazive predmeta.
+
+Rešenje:
+
+range of p1 is predmet
+range of p2 is predmet
+
+p1.oznaka, p1.naziv, p2.oznaka, p2.naziv
+where p1.espb = p2.espb and p1.idpredmeta < p2.idpredmeta
+
+Objašnjenje:
+
+Nad istom relacijom možemo definisati i više različitih promenljivih.
+
+-------------------------------------------------------------------
+
+7) Izdvojiti oznake i nazive predmeta koje je položio student sa indeksom 26/2014.
+
+Prvi pokušaj:
+
+range of p is predmet
+range of i is ispit
+
+p.oznaka, p.naziv, i.idpredmeta
+where i.idpredmeta = p.idpredmeta and
+      i.indeks = 20140026 and
+      i.ocena > 5
+
+Objašnjenje:
+
+Prvo što bi nam verovatno palo na pamet jeste da ovaj zadatak rešimo
+spajanjem - spojimo relacije predmet i ispit i onda izdvojimo samo
+one položene (ocena veća od 5) ispite studenta 26/2014. Međutim, da
+bi to uradili (da bi izvršili spajanje), u selekciji mora da učestvuje
+neka kolona promenljive i (relacije ispit).
+
+Ovo nam ne odgovara jer se u zadatku traži da izdvojimo samo oznake i
+nazive predmeta. Kolona "i.idpredmeta" koju smo dodatli zarad spajanja
+je višak. Za razliku od relacione algebre, ne možemo da vršimo dodatnu
+projekciju nad ovim rezultatom - ono što imamo od kolona na početku izraza,
+to i dobijamo.
+
+Kako onda da rešimo ovaj problem? Srećom, relacioni račun nam pruža
+egzistencijalni kvantifikator "exists <promenljiva> (<uslov>)"
+koji možemo koristiti prilikom zadavanja restrikcije.
+
+Rešenje:
+
+range of p is predmet
+range of i is ispit
+
+p.oznaka, p.naziv
+where exists i (
+    i.idpredmeta = p.idpredmeta and
+    i.indeks = 20140026 and
+    i.ocena > 5
+)
+
+Objašnjenje:
+
+Kvantifikator exists prihvata dva operanda - promenljivu za koju se
+vezuje, kao i uslov koji može referisati na tu promenljivu. Rezultat
+je "true" ukoliko postoji barem jedan red (torka) relacije vezane promenljive
+koji zadovoljava zadati uslov.
+
+Ovde smo suštinski rekli:
+"Izdvoj mi oznake i nazive predmeta (p) gde postoji neki ispit (i)
+koji im odgovara (i.idpredmeta = p.idpredmeta) i koji je položio (i.ocena > 5)
+student sa indeksom 26/2014 (i.indeks = 20140026)".
+
+SQL-ov pandan ovome bi bio upit:
+
+SELECT DISTINCT P.OZNAKA, P.NAZIV
+FROM PREDMET AS P
+WHERE EXISTS (
+    SELECT *
+    FROM ISPIT AS I
+    WHERE I.IDPREDMETA = P.IDPREDMETA AND
+          I.INDEKS = 20140026 AND
+          I.OCENA > 5
+);
+
+-------------------------------------------------------------------
+
+8) Izdvojiti indekse studenata koji su polagali sve predmete.
+
+Rešenje 1:
+
+range of d is dosije
+range of p is predmet
+range of i is ispit
+
+d.indeks
+where not exists p (
+    not exists i (
+        i.idpredmeta = p.idpredmeta and
+        i.indeks = d.indeks
+    )
+)
+
+Objašnjenje:
+
+Prisetimo se strategije koju smo koristili za ovakve upite kada smo
+radili EXISTS u SQL-u - treba da predstavimo uslov "polagali sve predmete"
+preko uslova postojanja.
+
+Ako razmislimo, prethodni zadatak je ekvivalentan sledećem:
+
+"Izdvojiti indekse studenata za koje ne postoji predmet koji taj student nije polagao."
+
+Ili, još preciznije:
+
+"Izdvojiti indekse studenata za koje ne postoji predmet za koji ne postoji ispit koji
+je polagao taj student."
+
+Ovakav uslov onda možemo lako izraziti i preko exists u relacionom računu.
+
+SQL-ov pandan ovome bi bio upit:
+
+SELECT DISTINCT D.INDEKS
+FROM DOSIJE AS D
+WHERE NOT EXISTS (
+    SELECT *
+    FROM PREDMET AS P
+    WHERE NOT EXISTS (
+        SELECT *
+        FROM ISPIT AS I
+        WHERE I.IDPREDMETA = P.IDPREDMETA AND
+              I.INDEKS = D.INDEKS
+    )
+);
+
+Rešenje 2:
+
+range of d is dosije
+range of p is predmet
+range of i is ispit
+
+d.indeks
+where forall p (
+    exists i (
+        i.idpredmeta = p.idpredmeta and
+        i.indeks = d.indeks
+    )
+)
+
+Objašnjenje:
+
+Međutim, ovaj zadatak je moguće rešiti i još lakše. Ono što smo u SQL-u
+(pa i u prethodnom rešenju) simulirali kroz duplu negaciju i operator exists,
+već postoji direktno ugrađeno u relacioni račun. U pitanju je tzv.
+univerzalni kvantifikator "forall <promenljiva> (<uslov>)".
+
+Za razliku od egzistencijalnog, forall operator će vratiti "true" samo
+ukoliko SVE (a ne bar jedna) torka iz relacije odgovarajuće vezane promenljive
+zadovoljava zadati uslov.
+
+-------------------------------------------------------------------
+
+9) Izdvojiti nazive predmeta koje su polagali svi studenti.
+
+Rešenje:
+
+range of p is predmet
+range of d is dosije
+range of i is ispit
+
+p.naziv
+where forall d (
+    exists i (
+        i.indeks = d.indeks and
+        i.idpredmeta = p.idpredmeta
+    )
+)
+
+-------------------------------------------------------------------
+
+10) Izdvojiti nazive predmeta koji imaju po 6 espb bodova i
+    koje je polagao student sa prezimenom Vukovic.
+
+Rešenje:
+
+range of p is predmet
+range of i is ispit
+range of d is dosije
+
+p.naziv
+where p.espb = 6 and
+      exists i (
+          i.idpredmeta = p.idpredmeta and
+          exists d (
+              d.indeks = i.indeks and
+              d.prezime = 'Vukovic'
+          )
+      )
+
+-------------------------------------------------------------------
+
+11) Izdvojiti indekse studenata koji su položili bar sve predmete
+    koje je položio student sa indeksom 25/2014.
+
+Rešenje 1:
+
+range of d is dosije
+range of p is predmet
+range of i is ispit
+
+d.indeks
+where forall p (
+    not exists i (i.idpredmeta = p.idpredmeta and i.ocena > 5 and i.indeks = 20140025)
+    or
+    exists i (i.idpredmeta = p.idpredmeta and i.ocena > 5 and i.indeks = d.indeks)
+)
+
+Objašnjenje:
+
+Razmislimo o tome šta mora da važi za svaki predmet u ovoj situaciji:
+
+(a) predmet nije položio student 25/2014 - tada nas ne zanima šta je sa tim predmetom uradio
+    naš student (da li ga je položio ili pao);
+(b) u suprotnom (ako je predmet položio student 25/2014), onda i naš student mora da ga
+    položi da bi uslov bio zadovoljen.
+
+Upravo ove "razbijene" uslove možemo da iskoristimo da rešimo zadatak.
+Za svaki predmet mora da važi bar jedno od (a) i (b), tj. (a) ili (b).
+
+Rešenje 2:
+
+range of d is dosije
+range of p is predmet
+range of i is ispit
+
+d.indeks
+where forall p (
+    if exists i (i.idpredmeta = p.idpredmeta and i.ocena > 5 and i.indeks = 20140025)
+    then
+    exists i (i.idpredmeta = p.idpredmeta and i.ocena > 5 and i.indeks = d.indeks)
+)
+
+Objašnjenje:
+
+Ako bismo rečenicu "Predmet p je položio student 25/2014" označili sa P,
+a rečenicu "Predmet p je položio student d" sa Q, uslov u rešenju 1 bismo
+mogli da predstavimo sa "not P or Q".
+
+Ako se prisetimo iskaznih veznika i njihovih istinitosnih tablica,
+primetićemo da je implikacija (P => Q) zapravo logički ekvivalentna
+sa uslovom "not P or Q". Relacioni račun nam zapravo pruža i implikaciju
+kao logički operator u vidu uslova "if P then Q" (ako važi P, onda mora važiti i Q).
+
+Upravo ovo možemo upotrebiti za rešavanje zadatka na način koji je
+verovatno lakši za razumevanje - ako za neki predmet postoji položen
+ispit od strane studenta 25/2014, onda za isti predmet mora postojati
+i položen ispit od strane našeg studenta.
+
+Napomena za oba rešenja - izgleda da RARRChecker ne daje ispravan rezultat,
+tj. daje nam praznu relaciju. Međutim, u rezultatu bi morao da se nalazi
+barem student sa indeksom 25/2014 jer one je položio bar sve predmete koje
+je on sam položio :).
+
+-------------------------------------------------------------------
+
+12) Izdvojiti indeks, ime i prezime studenta koji je položio samo Programiranje 1.
+
+Rešenje:
+
+range of d is dosije
+range of i is ispit
+range of p is predmet
+
+d.indeks, d.ime, d.prezime
+where exists i (
+    i.indeks = d.indeks and
+    i.ocena > 5 and
+    exists p (
+        i.idpredmeta = p.idpredmeta and
+        p.naziv = 'Programiranje 1'
+    )
+) and not exists i (
+    i.indeks = d.indeks and
+    i.ocena > 5 and
+    exists p (
+        i.idpredmeta = p.idpredmeta and
+        p.naziv <> 'Programiranje 1'
+    )
+)
+
+-------------------------------------------------------------------
+
+13) Pronaći predmet sa najvećim brojem espb bodova.
+    Izdvojiti naziv i broj espb bodova predmeta.
+
+Rešenje 1:
+
+range of p1 is predmet
+range of p2 is predmet
+
+p1.naziv, p1.espb
+where not exists p2 (
+    p2.espb > p1.espb
+)
+
+Rešenje 2:
+
+range of p1 is predmet
+range of p2 is predmet
+
+p1.naziv, p1.espb
+where forall p2 (
+    p2.espb <= p1.espb
+)
+
+-------------------------------------------------------------------
+
+14) Pronaći studente koji su položili neki predmet od 6 espb bodova.
+    Izdvojiti indeks, ime, prezime i naziv predmeta.
+
+Rešenje:
+
+range of d is dosije
+range of i is ispit
+range of p is predmet
+
+d.indeks, d.ime, d.prezime, p.naziv
+where p.espb = 6 and
+      exists i (
+          i.indeks = d.indeks and
+          i.idpredmeta = p.idpredmeta and
+          i.ocena > 5
+      )
+
+Objašnjenje:
+
+Spojimo sve studente sa svim predmetima koji vuku 6 espb. Nakon toga,
+zadržimo samo one parove (student, predmet) za koje postoji položen
+ispit (za tog konkretnog studenta i taj konkretan predmet).
+
+-------------------------------------------------------------------
+
+15) Pronaći studenta koji je u jednoj školskoj godini položio sve predmete.
+    Izdvojiti školsku godinu i indeks.
+
+Rešenje:
+
+range of d is dosije
+range of ir is ispitnirok
+range of p is predmet
+range of i is ispit
+
+d.indeks, ir.skgodina
+where forall p (
+    exists i (
+        i.indeks = d.indeks and
+        i.idpredmeta = p.idpredmeta and
+        i.skgodina = ir.skgodina and
+        i.ocena > 5
+    )
+)
+
+-------------------------------------------------------------------
+
+15) Izdvojiti indekse studenata koji su predmet sa identifikatorom
+    1001 polagali bar dva puta.
+
+Rešenje:
+
+d.indeks
+where exists i1 (
+    i1.indeks = d.indeks and
+    i1.idpredmeta = 1001 and
+    exists i2 (
+        i2.indeks = d.indeks and
+        i2.idpredmeta = 1001 and
+        i2.datpolaganja <> i1.datpolaganja
+    )
+)
+
+Objašnjenje:
+
+Kako možemo da predstavimo prebrojavanje u relacionom računu?
+U ovom slučaju, dovoljno je da kažemo da nas interesuju oni studenti
+za koje postoji polaganje (i1) ispita 1001, ali i drugo polaganje (i2)
+sa različitim datumom od onog iz i1 (da bi se osigurali da su u pitanju
+različita polaganja). Kada bi se tražilo da je polagao bar tri puta,
+samo bi dodali i3, pri čemu bi njegov datum polaganja morao da se razlikuje
+i od onog iz i1, i od onog iz i2.
+
+-------------------------------------------------------------------
+
+16) Izdvojiti indekse studenata koji su predmet sa identifikatorom
+    1001 polagali tačno dva puta.
+
+Rešenje:
+
+range of d is dosije
+range of i1 is ispit
+range of i2 is ispit
+range of i3 is ispit
+
+d.indeks
+where exists i1 (
+    i1.indeks = d.indeks and
+    i1.idpredmeta = 1001 and
+    exists i2 (
+        i2.indeks = d.indeks and
+        i2.idpredmeta = 1001 and
+        i2.datpolaganja <> i1.datpolaganja and
+        not exists i3 (
+            i3.indeks = d.indeks and
+            i3.idpredmeta = 1001 and
+            i3.datpolaganja <> i2.datpolaganja and
+            i3.datpolaganja <> i1.datpolaganja
+        )
+    )
+)
+
+Objašnjenje:
+
+Sada imamo uslov da je student polagao predmet tačno dva puta umesto
+bar dva puta. Princip rešavanja je isti kao i u prethodnom zadatku,
+samo što sada dodajemo i da ne sme da postoji neko i3 čiji se datum
+razlikuje od onog iz i1 i i2.
+
+Napomena - i ovaj, a i prethodni zadatak, smo mogli da rešimo bez
+upotrebe relacije d (tako što selektujemo i1.indeks umesto d.indeks),
+ali mislim da je ovako lakše za razumevanje.
+
+-------------------------------------------------------------------
+
+17) Pronaći predmete koje su položili dva studenta upisana istog dana.
+    Izdvojiti datum upisa i naziv predmeta.
+
+Rešenje:
+
+range of p is predmet
+range of d1 is dosije
+range of i1 is ispit
+range of d2 is dosije
+range of i2 is ispit
+
+p.naziv, d1.datupisa
+where exists i1 (
+    i1.idpredmeta = p.idpredmeta and
+    i1.indeks = d1.indeks and
+    i1.ocena > 5
+) and exists d2 (
+    d2.datupisa = d1.datupisa and
+    d2.indeks <> d1.indeks and
+    exists i2 (
+        i2.idpredmeta = p.idpredmeta and
+        i2.indeks = d2.indeks and
+        i2.ocena > 5
+    )
+)
+
+Objašnjenje:
+
+Sa prvim uslovom (exists i1) osigurali smo se da dobijamo studente i
+njihove položene predmete. Sa drugim uslovom (exists d2) dodali smo
+ograničenje da hoćemo samo one studente za koje postoji neki drugi
+(osigurano sa d2.indeks <> d1.indeks) student sa istim datumom upisa
+(osigurano sa d2.datupisa = d1.datupisa). To da je predmet p položen
+i od strane studenta d2 osiguravamo sa uslovom exists i2...
+
+-------------------------------------------------------------------
+
+18) Pronaći indeks studenta koji je položio sve predmete od 6 espb bodova.
+
+Rešenje:
+
+range of d is dosije
+range of p is predmet
+range of i is ispit
+
+d.indeks
+where forall p (
+    if p.espb = 6 then exists i (i.indeks = d.indeks and i.idpredmeta = p.idpredmeta and i.ocena > 5)
+)
+
+Objašnjenje:
+
+Da bi neki student d bio dodat u rezultat, za svaki predmet p mora da važi
+da, ukoliko taj predmet nosi 6 espb, student d ga je položio (tj. implikacija).
+
+-------------------------------------------------------------------
+
+19) Pronaći indeks studenta koji nije položio sve predmete od 6 bodova.
+
+Rešenje:
+
+range of d is dosije
+range of p is predmet
+range of i is ispit
+
+d.indeks
+where exists p (
+    p.espb = 6 and
+    not exists i (
+        i.indeks = d.indeks and
+        i.idpredmeta = p.idpredmeta and
+        i.ocena > 5
+    )
+)
+
+-------------------------------------------------------------------
+
+20) Pronaći indeks studenta koji je položio neki predmet od 6 espb bodova
+    ali ne i sve predmete od 6 espb bodova.
+
+Rešenje 1:
+
+range of d is dosije
+range of p is predmet
+range of i is ispit
+
+d.indeks
+where exists p (
+    p.espb = 6 and
+    exists i (
+        i.indeks = d.indeks and
+        i.idpredmeta = p.idpredmeta and
+        i.ocena > 5
+    )
+) and not forall p (
+    if p.espb = 6 then exists i (i.indeks = d.indeks and i.idpredmeta = p.idpredmeta and i.ocena > 5)
+)
+
+Objašnjenje:
+
+Suštinski kombinacija 18) i 19).
+
+Rešenje 2:
+
+range of d is dosije
+range of p is predmet
+range of i is ispit
+
+d.indeks
+where exists p (
+    p.espb = 6 and
+    exists i (
+        i.indeks = d.indeks and
+        i.idpredmeta = p.idpredmeta and
+        i.ocena > 5
+    )
+) and exists p (
+    p.espb = 6 and
+    not exists i (
+        i.indeks = d.indeks and
+        i.idpredmeta = p.idpredmeta and
+        i.ocena > 5
+    )
+)
+
+Objašnjenje:
+
+Umesto "not forall" i implikacije, možemo i samo postaviti uslov da
+mora postojati predmet p za koji ne postoji odgovarajući položeni ispit.
