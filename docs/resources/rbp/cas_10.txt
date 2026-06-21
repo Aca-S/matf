@@ -472,3 +472,150 @@ Objašnjenje:
 
 Efektivno "grupišemo" po kolonama indeks i skgodina, pa gledamo u kojim
 tako dobijenim grupama imamo sve predmete.
+
+-------------------------------------------------------------------
+
+21) Izdvojiti indekse studenata koji su predmet sa identifikatorom
+    1001 polagali bar dva puta.
+
+Rešenje:
+
+define alias i1 for ispit
+define alias i2 for ispit
+
+((i1 times i2)
+where i1.indeks = i2.indeks and
+      i1.idpredmeta = 1001 and
+      i2.idpredmeta = 1001 and
+      i2.datpolaganja <> i1.datpolaganja)[i1.indeks]
+
+Objašnjenje:
+
+Pravimo spoj dva ispita za istog studenta (uslov i1.indeks = i2.indeks),
+nakon čega vršimo restrikciju samo na polaganja predmeta sa identifikatorom
+1001.
+
+Da bi osigurali da su u pitanju dva različita polaganja, dovoljno je
+dodati uslov da se datumi polaganja prvog i drugog takvog ispita razlikuju.
+
+-------------------------------------------------------------------
+
+22) Izdvojiti indekse studenata koji su predmet sa identifikatorom
+    1001 polagali bar tri puta.
+
+Rešenje:
+
+define alias i1 for ispit
+define alias i2 for ispit
+define alias i3 for ispit
+
+((i1 times i2 times i3)
+where i1.indeks = i2.indeks and
+      i2.indeks = i3.indeks and
+      i1.idpredmeta = 1001 and
+      i2.idpredmeta = 1001 and
+      i3.idpredmeta = 1001 and
+      i2.datpolaganja <> i1.datpolaganja and
+      i3.datpolaganja <> i1.datpolaganja and
+      i3.datpolaganja <> i2.datpolaganja)[i1.indeks]
+
+Objašnjenje:
+
+Isti pristup kao i prethodni zadatak, samo što se proširuje na tri
+polaganja. Obratiti pažnju da datum trećeg polaganja treba da bude
+različit i od datuma prvog, a i od datuma drugog polaganja.
+
+-------------------------------------------------------------------
+
+23) Izdvojiti indekse studenata koji su predmet sa identifikatorom
+    1001 polagali tačno dva puta.
+
+Rešenje:
+
+define alias i1 for ispit
+define alias i2 for ispit
+define alias i3 for ispit
+
+((i1 times i2)
+where i1.indeks = i2.indeks and
+      i1.idpredmeta = 1001 and
+      i2.idpredmeta = 1001 and
+      i2.datpolaganja <> i1.datpolaganja)[i1.indeks]
+minus
+((i1 times i2 times i3)
+where i1.indeks = i2.indeks and
+      i2.indeks = i3.indeks and
+      i1.idpredmeta = 1001 and
+      i2.idpredmeta = 1001 and
+      i3.idpredmeta = 1001 and
+      i2.datpolaganja <> i1.datpolaganja and
+      i3.datpolaganja <> i1.datpolaganja and
+      i3.datpolaganja <> i2.datpolaganja)[i1.indeks]
+
+Objašnjenje:
+
+Ideja je da nađemo sve one studente koji su imali bar dva polaganja,
+nakon čega od njih oduzimamo one koji su imali bar tri polaganja.
+
+-------------------------------------------------------------------
+
+24) Pronaći predmete koje su položili dva studenta upisana istog dana.
+    Izdvojiti datum upisa i naziv predmeta.
+
+Rešenje:
+
+define alias i1 for ispit
+define alias d1 for dosije
+define alias i2 for ispit
+define alias d2 for dosije
+
+((((i1 where ocena > 5 join d1)
+times
+(i2 where ocena > 5 join d2))
+where
+i1.idpredmeta = i2.idpredmeta and
+i1.indeks <> i2.indeks and
+d1.datupisa = d2.datupisa) join predmet)[predmet.naziv, d1.datupisa]
+
+-------------------------------------------------------------------
+
+25) Pronaći indeks studenta koji je položio sve predmete od 6 espb bodova.
+
+Rešenje:
+
+(ispit where ocena > 5)[idpredmeta, indeks]
+divideby
+(predmet where espb = 6)[idpredmeta]
+
+-------------------------------------------------------------------
+
+26) Pronaći indeks studenta koji nije položio sve predmete od 6 bodova.
+
+Rešenje:
+
+dosije[indeks]
+minus
+((ispit where ocena > 5)[idpredmeta, indeks]
+divideby
+(predmet where espb = 6)[idpredmeta])
+
+-------------------------------------------------------------------
+
+27) Pronaći indeks studenta koji je položio neki predmet od 6 espb bodova.
+
+Rešenje:
+
+((ispit where ocena > 5) join (predmet where espb = 6))[ispit.indeks]
+
+-------------------------------------------------------------------
+
+28) Pronaći indeks studenta koji je položio neki predmet od 6 espb bodova,
+    ali ne i sve predmete od 6 espb bodova.
+
+Rešenje:
+
+((ispit where ocena > 5) join (predmet where espb = 6))[ispit.indeks]
+minus
+((ispit where ocena > 5)[idpredmeta, indeks]
+divideby
+(predmet where espb = 6)[idpredmeta])

@@ -558,7 +558,7 @@ ali mislim da je ovako lakše za razumevanje.
 
 -------------------------------------------------------------------
 
-17) Pronaći predmete koje su položili dva studenta upisana istog dana.
+17) Pronaći predmete koje su položila dva studenta upisana istog dana.
     Izdvojiti datum upisa i naziv predmeta.
 
 Rešenje:
@@ -617,7 +617,18 @@ da, ukoliko taj predmet nosi 6 espb, student d ga je položio (tj. implikacija).
 
 19) Pronaći indeks studenta koji nije položio sve predmete od 6 bodova.
 
-Rešenje:
+Rešenje 1:
+
+range of d is dosije
+range of p is predmet
+range of i is ispit
+
+d.indeks
+where not forall p (
+    if p.espb = 6 then exists i (i.indeks = d.indeks and i.idpredmeta = p.idpredmeta and i.ocena > 5)
+)
+
+Rešenje 2:
 
 range of d is dosije
 range of p is predmet
@@ -635,7 +646,25 @@ where exists p (
 
 -------------------------------------------------------------------
 
-20) Pronaći indeks studenta koji je položio neki predmet od 6 espb bodova
+20) Pronaći indeks studenta koji je položio neki predmet od 6 espb bodova.
+
+range of d is dosije
+range of p is predmet
+range of i is ispit
+
+d.indeks
+where exists p (
+    p.espb = 6 and
+    exists i (
+        i.indeks = d.indeks and
+        i.idpredmeta = p.idpredmeta and
+        i.ocena > 5
+    )
+)
+
+-------------------------------------------------------------------
+
+21) Pronaći indeks studenta koji je položio neki predmet od 6 espb bodova,
     ali ne i sve predmete od 6 espb bodova.
 
 Rešenje 1:
@@ -655,10 +684,6 @@ where exists p (
 ) and not forall p (
     if p.espb = 6 then exists i (i.indeks = d.indeks and i.idpredmeta = p.idpredmeta and i.ocena > 5)
 )
-
-Objašnjenje:
-
-Suštinski kombinacija 18) i 19).
 
 Rešenje 2:
 
@@ -685,5 +710,4 @@ where exists p (
 
 Objašnjenje:
 
-Umesto "not forall" i implikacije, možemo i samo postaviti uslov da
-mora postojati predmet p za koji ne postoji odgovarajući položeni ispit.
+Obe varijante su obična kombinacija 19) i 20).
