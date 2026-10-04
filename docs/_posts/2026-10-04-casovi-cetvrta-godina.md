@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Termini vežbi za četvrtu godinu (stara akreditacija)"
+title:  "[RS] Termini vežbi za četvrtu godinu (stara akreditacija)"
 date: 2026-10-04
 categories: rs
 ---
